@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "command": "cd ~/.platformio/packages/tool-openocd && bin/openocd -f scripts/interface/stlink.cfg -f target/stm32f1x.cfg",
+            "args": [
+            ],
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "label": "Platformio: OpenOCD (semihosting output)"
+        }
+    ]
+}
