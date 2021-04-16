@@ -1,6 +1,7 @@
 #include "system.h"
 
 void System::init(void) {
+    HAL_Init();
     initSysClock();
 }
 

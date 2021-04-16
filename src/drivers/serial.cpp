@@ -13,6 +13,7 @@ UART_HandleTypeDef *gHuart;
 
 void Serial::init(void) {
     
+    #ifdef SERIAL_DEBUG
     // Initialize UART for console logging on USART2
     consoleUARTConfig.Instance             = USART2;
     consoleUARTConfig.Init.BaudRate        = 115200;
@@ -27,6 +28,7 @@ void Serial::init(void) {
 
     #if !defined(OS_USE_SEMIHOSTING)
     _retargetInit();
+    #endif
     #endif
 
     // Initialize UART for MIDI communication on USART3
@@ -44,12 +46,6 @@ void Serial::init(void) {
     clrScreen();
 }
 
-// Writing console
-void Serial::clrScreen() {
-    HAL_UART_Transmit(&consoleUARTConfig, (uint8_t*)"\033[0;0H", strlen("\033[0;0H"), HAL_MAX_DELAY);
-	HAL_UART_Transmit(&consoleUARTConfig, (uint8_t*)"\033[2J", strlen("\033[2J"), HAL_MAX_DELAY);
-}
-
 // Reading MIDI
 bool Serial::midiReadable(void) {
     return USART3->SR & USART_FLAG_RXNE;
@@ -59,13 +55,23 @@ uint8_t Serial::midiRead(void) {
     return USART3->DR;
 }
 
+// Writing console
+void Serial::clrScreen() {
+    #ifdef SERIAL_DEBUG
+    HAL_UART_Transmit(&consoleUARTConfig, (uint8_t*)"\033[0;0H", strlen("\033[0;0H"), HAL_MAX_DELAY);
+	HAL_UART_Transmit(&consoleUARTConfig, (uint8_t*)"\033[2J", strlen("\033[2J"), HAL_MAX_DELAY);
+    #endif
+}
+
 void Serial::_retargetInit(void) {
+    #ifdef SERIAL_DEBUG
     #if !defined(OS_USE_SEMIHOSTING)
     gHuart = &consoleUARTConfig;
 
     /* Disable I/O buffering for STDOUT stream, so that
     * chars are sent out as soon as they are printed. */
     setvbuf(stdout, NULL, _IONBF, 0);
+    #endif
     #endif
 }
 
@@ -81,14 +87,13 @@ extern "C"
 // for the given UART.
 void HAL_UART_MspInit(UART_HandleTypeDef * uart) {
     GPIO_InitTypeDef uartGPIOConfig;
-    if (uart->Instance == USART2) {         // Is it UART2? Fuck ye
 
-        // UART2 has the following pins on the MCU:
-        // TX --> PA2
-        // RX --> PA3
-        // So we need to set these up.
-
-        __HAL_RCC_USART2_CLK_ENABLE();      // Need to enable UART...
+    #ifdef SERIAL_DEBUG
+    // UART2 for serial console logging. Pins:
+    // TX --> PA2
+    // RX --> PA3 - unused
+    if (uart->Instance == USART2) {
+        __HAL_RCC_USART2_CLK_ENABLE();      // Enable UART...
         __HAL_RCC_GPIOA_CLK_ENABLE();       // ...and the GPIOA port clock.
 
         uartGPIOConfig.Pin = GPIO_PIN_2;    // This is TX pin to transmit data
@@ -97,19 +102,20 @@ void HAL_UART_MspInit(UART_HandleTypeDef * uart) {
 
         HAL_GPIO_Init(GPIOA, &uartGPIOConfig);
     }
+    #endif
 
+    // MIDI input on UART
     if (uart->Instance == USART3) {         // Is it UART3
 
-        // UART2 has the following pins on the MCU:
-        // TX --> PB10
+        // UART3 has the following pins on the MCU:
+        // TX --> PB10 - unused TODO: implement midi thru
         // RX --> PB11
-        // So we need to set these up.
 
-        __HAL_RCC_USART3_CLK_ENABLE();      // Need to enable UART...
+        __HAL_RCC_USART3_CLK_ENABLE();      // Enable UART...
         __HAL_RCC_GPIOB_CLK_ENABLE();       // ...and the GPIOA port clock.
 
-        uartGPIOConfig.Pin = GPIO_PIN_11;    // This is TX pin to transmit data
-        uartGPIOConfig.Mode = GPIO_MODE_INPUT;      // I guess this could be GPIO_MODE_AF_PP too
+        uartGPIOConfig.Pin = GPIO_PIN_11;    // This is RX pin for receiving data
+        uartGPIOConfig.Mode = GPIO_MODE_INPUT;
         uartGPIOConfig.Speed = GPIO_SPEED_FREQ_HIGH;
         uartGPIOConfig.Pull = GPIO_PULLUP;
 
@@ -124,6 +130,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef * uart) {
  * Retarget standard output. 
  * https://shawnhymel.com/1873/how-to-use-printf-on-stm32/
 */
+#ifdef SERIAL_DEBUG
 #if !defined(OS_USE_SEMIHOSTING)
 extern "C" {
 
@@ -191,4 +198,5 @@ int _fstat(int fd, struct stat* st) {
 }
 
 }
+#endif
 #endif

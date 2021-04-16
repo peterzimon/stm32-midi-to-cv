@@ -10,7 +10,6 @@
  * libraries must be added to .vscode/c_cpp_properties.json includePath 
  * and browse/path.
 */
-
 #include <string.h>
 #include "stm32f1xx_hal.h"
 
@@ -27,8 +26,6 @@ MidiHandler poly;
 DAC dac;
 
 int main(void) {
-    
-    HAL_Init();
 
     system.init();
     leds.init();
@@ -36,15 +33,11 @@ int main(void) {
     poly.init();
     dac.init();
 
-    // Attach handlers
-    // TODO: think about this. The whole thing could be done with one static class? Not sure...
-    poly.attach(&dac); // Attach dac driver to MIDI to CV handler
+    poly.attach(&dac);
 
     printf("Let's see y'all naked!\r\n");
     
-    // Main loop
     while (1) {
-
         // Read MIDI from serial
         if (serial.midiReadable()) {
             poly.saveByte(serial.midiRead());
