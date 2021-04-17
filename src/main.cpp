@@ -18,32 +18,36 @@
 #include "drivers/leds.h"
 #include "drivers/dac.h"        // TODO: not implemented
 #include "midi-handler.h"
+#include "settings.h"
 
 Serial serial;
 System system;
 Leds leds;
-MidiHandler poly;
+MidiHandler midi;
 DAC dac;
+Settings settings;
 
 int main(void) {
+
+    settings.mode = MONO;
 
     system.init();
     leds.init();
     serial.init();
-    poly.init();
+    midi.init();
     dac.init();
 
-    poly.attach(&dac);
+    midi.attach(&dac);
 
     printf("Let's see y'all naked!\r\n");
     
     while (1) {
         // Read MIDI from serial
         if (serial.midiReadable()) {
-            poly.saveByte(serial.midiRead());
+            midi.saveByte(serial.midiRead());
         }
 
         // Process MIDI and convert to CV
-        poly.process();
+        midi.process();
     }
 }
