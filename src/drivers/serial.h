@@ -5,9 +5,6 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#define SERIAL_DEBUG // Comment to turn off serial debugging
-                        // TODO: final test when no serial debug
-
 #include <string.h>
 #include <_ansi.h>
 #include <_syslist.h>
@@ -20,6 +17,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "settings.h"
 #include "stm32f1xx_hal.h"
 
 

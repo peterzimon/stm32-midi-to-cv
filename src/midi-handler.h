@@ -26,18 +26,24 @@ class MidiHandler: public MidiParser {
         void process();
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
+        void debug(void);
     
     private:
         DAC *_dac;
         uint8_t _buffer[MIDI_BUFFER_SIZE];
         RingBuffer _inputBuffer;
-        uint16_t _cvForNote(uint8_t note);
         uint8_t _notes[CHANNELS];
         uint16_t _cvs[CHANNELS];
+        uint8_t _noteHistory[CHANNELS];
+        int _lruch = 0;  // Least recently used channel
+        int _activeOutputs = 0;
+
+        uint16_t _cvForNote(uint8_t note);
+        int8_t _findOutputChannel(uint8_t note);
+        int8_t _findIdleOutputChannel(void);
         void _updateOutput(void);
-        int8_t _findNote(uint8_t note);
         void _reset(void);
-        void _debug(void);
+        void _removeNoteFromHistory(uint8_t note);
 };
 
 #endif

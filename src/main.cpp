@@ -15,24 +15,24 @@
 
 #include "drivers/serial.h"
 #include "drivers/system.h"
-#include "drivers/leds.h"
+#include "drivers/ui.h"
 #include "drivers/dac.h"        // TODO: not implemented
 #include "midi-handler.h"
 #include "settings.h"
 
 Serial serial;
 System system;
-Leds leds;
+UI ui;
 MidiHandler midi;
 DAC dac;
 Settings settings;
 
 int main(void) {
 
-    settings.mode = MONO;
+    settings.mode = POLY;
 
     system.init();
-    leds.init();
+    ui.init();
     serial.init();
     midi.init();
     dac.init();
@@ -49,5 +49,14 @@ int main(void) {
 
         // Process MIDI and convert to CV
         midi.process();
+
+#ifdef SERIAL_DEBUG
+        // Debug: print notes and CV values when button is pressed
+        if (!HAL_GPIO_ReadPin(DEBUG_BUTTON_PORT, DEBUG_BUTTON_PIN)) {
+            midi.debug();
+            HAL_Delay(500); // Debounce
+        }
+#endif
+
     }
 }
