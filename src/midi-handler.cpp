@@ -1,81 +1,3 @@
-/**
- * Last note priority logic
- * ------------------------
- * 
- * If all voices are used (at least 4 notes are played) then with each 
- * new note, the least recently used has to be replaced. 
- * 
- * Requires two buffers:
- * LRU - least recently used voices. Contains the voice/output index (0-3)
- *       in the order of lowest index being the least recently used and
- *       highest index being the most recently used. E.g. [3,0,2,1]
- * AN  - active notes. MIDI note number of incoming notes.
- * 
- * When the LRU is not full then add the new voice to the next empty slot.
- * If the LRU is full then find the new voice in the LRU and (1) shift all
- * voices that came in later than the new voice and put the new voice to 
- * the end of the LRU.
- * 
- * Example 1:
- * 1. Init state, the LRU and AN are empty. 
- *      LRU = [-1,-1,-1,-1]
- *      AN = [0,0,0,0]
- * 
- * 2. Let's assume a couple of notes come in and the LRU/AN start to get 
- *    filled. 
- *          LRU = [0,1,2,-1]
- *          AN = [60,62,64,-1]
- * 
- * 3. At this point, a fourth note comes in and the LRU gets full
- *          LRU = [0,1,2,3]
- *          AN = [60,62,64,66]
- * 
- * 4. When a next note comes in (remember no noteOffs up until now), the logic
- *    in the noteOn function gets the least recently used voice from the LRU.
- *    That will be the voice of the 5th (new) note. In this case the LRU
- *    needs to be updated so that the updated voice gets to the end of the
- *    LRU and all the others get left shifted by 1. Also the note for the 
- *    old voice has to be replaced with the new note.
- * 
- *    Before:
- *          LRU = [0,1,2,3]
- *          AN = [60,62,64,66]
- *    
- *    • Least recently used voice LRU[0] = 0
- *    • Note to be replaced = AN[LRU[0]] = 60
- *    • New least recently used voice / note = 1 / 62
- * 
- *    After:
- *          LRU = [1,2,3,0]
- *          AN = [70,62,64,66]
- * 
- * 5. This way if a next (6th) note comes in it's going to take the first 
- *    voice from the LRU and do the same as in step 4.
-
- *    Before:
- *          LRU = [1,2,3,0]
- *          AN = [70,62,64,66]
- * 
- *    After:
- *          LRU = [2,3,0,1]
- *          AN = [70,72,64,66]
- * 
- * 6. Let's assume that a noteOff message is received. The logic in the noteOff
- *    function finds if this note is actually played and if so which voice
- *    is playing it. Let's say it's the note 64 playing through voice #2. In this 
- *    case the note has to be removed from the active notes array and the associated
- *    voice has to be removed from the LRU and all the voices with higher LRU
- *    index has to be left shifted by 1.
- *  
- *    Before:
- *          LRU = [2,3,0,1]
- *          AN = [70,72,64,66]
- *
- *    After:
- *          LRU = [3,0,1,-1]
- *          AN = [70,72,0,66]
-*/
-
 #include <stdio.h>
 #include <math.h>
 #include "midi-handler.h"
@@ -103,127 +25,50 @@ void MidiHandler::process() {
 }
 
 void MidiHandler::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
-    int voice = _findVoice(note);
-    if (voice == -1) {
-        return;
+    switch (settings.mode) {
+        case MONO:
+            // TODO: implement mono
+            break;
+        case POLY:
+            poly.noteOff(channel, note, velocity);
+            poly.getCVGate(_cvs, _gates);
+            break;
     }
-    _notes[voice] = 0;
-    int voiceIndex = _findVoiceLRUIndex(voice);
-    _leftShiftLRU(voiceIndex + 1);
-    _lru[VOICES - 1] = -1;
     _updateOutput();
 }
 
 
 void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
-    if (_findVoice(note) != -1) {
-        return;
-    }
-
     switch (settings.mode) {
         case MONO:
-            _notes[0] = note;
+            // _notes[0] = note; TODO: implement mono
             break;
 
         case POLY:
-            int voice = _findInactiveVoice();
-
-            if (voice != -1) {
-                _addVoiceToLRU(voice);
-            } else {
-                voice = _lru[0];
-                _leftShiftLRU(1);
-                _lru[VOICES - 1] = voice;
-            }
-
-            _notes[voice] = note;
+            poly.noteOn(channel, note, velocity);
+            poly.getCVGate(_cvs, _gates);
             break;
     }
-
     _updateOutput();
-}
-
-void MidiHandler::_addVoiceToLRU(int voice) {
-    for (int i = 0; i < VOICES; i++) {
-        if (_lru[i] == -1) {
-            _lru[i] = voice;
-            return;
-        }
-    }
-}
-
-void MidiHandler::_removeVoiceFromLRU(int voice) {
-    for (int i = 0; i < VOICES; i++) {
-        if (_lru[i] == voice) {
-            _lru[i] = -1;
-            return;
-        }
-    }
-}
-
-void MidiHandler::_leftShiftLRU(uint fromIndex) {
-    if (fromIndex == 0) return;
-    for (uint i = 0; i < VOICES; i++) {
-        if (i >= fromIndex) {
-            _lru[i - 1] = _lru[i];
-        }
-    }
-}
-
-int MidiHandler::_findInactiveVoice(void) {
-    for (int i = 0; i < VOICES; i++) {
-        if (!_notes[i]) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void MidiHandler::_updateOutput(void) {
-    for (int i = 0; i < VOICES; i++) {
-        _cvs[i] = _cvForNote(_notes[i]);
-    }
-}
-
-int MidiHandler::_findVoice(uint8_t note) {
-    for (int i = 0; i < VOICES; i++) {
-        if (_notes[i] == note) return i;
-    }
-    return -1;
-}
-
-int MidiHandler::_findVoiceLRUIndex(int voice) {
-    if (voice < 0) return 0;
-    for (int i = 0; i < VOICES; i++) {
-        if (_lru[i] == voice) return i;
-    }
-    return -1;
-}
-
-// TODO: Pitch bend
-uint16_t MidiHandler::_cvForNote(uint8_t note) {
-    int firstMidiNote = (LOWEST_OCTAVE + 1) * 12;
-    float noteForCV = (float)note - firstMidiNote;
-    return (uint16_t)fmin(4000, fmax(0, round(noteForCV * 1000/12)));
 }
 
 void MidiHandler::_reset(void) {
     for (int i = 0; i < VOICES; i++) {
-        _notes[i] = 0;
         _cvs[i] = 0;
-        _lru[i] = -1;
+        _gates[i] = 0;
     }
 }
 
+void MidiHandler::_updateOutput(void) {
+    // Update DAC
+}
+
 void MidiHandler::debug(void) {
-    printf("Channel - Note - CV\r\n");
+    printf("Voice - CV\r\n");
     printf("-------------------\r\n");
     for (int i = 0; i < VOICES; i++) {
-        printf("%d - %d - %d\r\n", i, _notes[i], _cvs[i]);
+        printf("%d - %d\r\n", i, _cvs[i]);
     }
 
-    printf("LRU\r\n");
-    for (int i = 0; i < VOICES; i++) {
-        printf("%d\r\n", _lru[i]);
-    }
+    poly.debug();
 }
