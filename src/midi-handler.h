@@ -16,7 +16,7 @@
 #define MIDI_BUFFER_SIZE 32
 #define OCTAVES 4
 #define LOWEST_OCTAVE 2
-#define CHANNELS 4
+#define VOICES 4
 
 class MidiHandler: public MidiParser {
     public:
@@ -32,18 +32,21 @@ class MidiHandler: public MidiParser {
         DAC *_dac;
         uint8_t _buffer[MIDI_BUFFER_SIZE];
         RingBuffer _inputBuffer;
-        uint8_t _notes[CHANNELS];
-        uint16_t _cvs[CHANNELS];
-        uint8_t _noteHistory[CHANNELS];
-        int _lruch = 0;  // Least recently used channel
-        int _activeOutputs = 0;
+        uint8_t _notes[VOICES];
+        uint16_t _cvs[VOICES];
+        int _lru[VOICES];
 
-        uint16_t _cvForNote(uint8_t note);
-        int8_t _findOutputChannel(uint8_t note);
-        int8_t _findIdleOutputChannel(void);
-        void _updateOutput(void);
         void _reset(void);
-        void _removeNoteFromHistory(uint8_t note);
+        uint16_t _cvForNote(uint8_t note);
+        int _findVoice(uint8_t note);
+        int _findVoiceLRUIndex(int voice);
+        int _findInactiveVoice(void);
+        void _addVoiceToLRU(int voice);
+        void _removeVoiceFromLRU(int voice);
+        void _leftShiftLRU(uint fromIndex);
+        void _updateOutput(void);
+
+        // void _removeNoteFromHistory(uint8_t note);
 };
 
 #endif
