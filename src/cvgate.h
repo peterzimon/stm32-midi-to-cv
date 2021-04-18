@@ -14,6 +14,7 @@ class CVGate {
         virtual void noteOn(uint8_t channel, uint8_t note, uint8_t velocity) { }
         virtual void getCVGate(uint16_t *cv, int *gate) { }
         uint16_t cvForNote(uint8_t note);
+        void debug(void) { }
 };
 
 #endif

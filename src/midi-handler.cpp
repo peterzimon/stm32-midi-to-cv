@@ -62,5 +62,5 @@ void MidiHandler::debug(void) {
         printf("%d - %d\r\n", i, _cvs[i]);
     }
 
-    // poly.debug();
+    _cvGate->debug();
 }

@@ -9,6 +9,12 @@
  * Uses Shmoergh stm32lib: https://github.com/peterzimon/stm32lib. These
  * libraries must be added to .vscode/c_cpp_properties.json includePath 
  * and browse/path.
+ * 
+ * 
+ * To be tested:
+ * - mono velocity
+ * - pitch bend is not implemented
+ * - modwheel is not implemented
 */
 #include <string.h>
 #include "stm32f1xx_hal.h"

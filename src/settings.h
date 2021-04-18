@@ -7,6 +7,8 @@
 #define OCTAVES 4
 #define LOWEST_OCTAVE 2
 #define VOICES 4
+#define MAX_NOTE_VOLTAGE 4000
+#define MAX_CV_VOLTAGE 4000
 
 enum Mode {
     MONO,

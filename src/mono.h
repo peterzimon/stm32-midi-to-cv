@@ -22,9 +22,11 @@ class Mono: public CVGate {
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
         void getCVGate(uint16_t *cv, int *gate);
+        void debug(void);
 
     private:
         uint8_t _note;
+        uint16_t _velocity;
         void _reset(void);
 };
 
