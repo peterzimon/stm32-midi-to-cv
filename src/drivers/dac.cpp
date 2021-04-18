@@ -30,6 +30,25 @@ void DAC::init(void) {
     HAL_I2C_Init(&_I2CConfig);
 
     _mcp4728.init(&_I2CConfig, 0x00);
+
+    // TODO: test if this is needed:
+    _mcp4728.reset();
+    _mcp4728.wake();
+
+    // Use internal Vref with 2x gain
+    _mcp4728.setVref(MCP4728_VREF_INTERNAL, MCP4728_VREF_INTERNAL, MCP4728_VREF_INTERNAL, MCP4728_VREF_INTERNAL);
+    _mcp4728.setGain(MCP4728_GAIN_2, MCP4728_GAIN_2, MCP4728_GAIN_2, MCP4728_GAIN_2);
+}
+
+/**
+ * Writes values (0-4095) to MCP4728. Must be an array with 4 values.
+*/
+void DAC::write(uint16_t *values) {
+    _mcp4728.write(values[0], values[1], values[2], values[3]);
+}
+
+void DAC::write(uint8_t channel, uint16_t value) {
+    _mcp4728.write(channel, value);
 }
 
 /**

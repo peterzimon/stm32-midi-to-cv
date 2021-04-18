@@ -48,8 +48,8 @@ int main(void) {
     printf("Let's see y'all naked!\r\n");
 
     // TODO: test DAC with various values
-    // TODO: implement DAC calibration
-    
+    uint16_t values[4] = {1000, 2000, 3000, 4000};
+    dac.write(values);
     
     while (1) {
         // Read MIDI from serial
