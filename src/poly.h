@@ -97,7 +97,6 @@ class Poly: public CVGate {
         uint16_t _cvs[VOICES];
         int _lru[VOICES];
 
-        void _reset(void);
         int _findVoice(uint8_t note);
         int _findVoiceLRUIndex(int voice);
         int _findInactiveVoice(void);

@@ -1,8 +1,7 @@
 /**
  * Saves incoming MIDI data to a buffer and then processes. This class is inherited from
  * MidiParser and uses the parent class's parseByte() function to parse MIDI data and
- * call the appropriate handler function. Since it's a MIDI to CV application, only
- * note on/off and pitch bend MIDI messages are implemented.
+ * call the appropriate handler function.
 */
 
 #ifndef MIDI_HANDLER_H
@@ -13,6 +12,7 @@
 #include <ringbuffer.h>
 #include "drivers/dac.h"
 #include "settings.h"
+#include "cvgate.h"
 #include "mono.h"
 #include "poly.h"
 
@@ -32,12 +32,12 @@ class MidiHandler: public MidiParser {
         DAC *_dac;
         uint8_t _buffer[MIDI_BUFFER_SIZE];
         RingBuffer _inputBuffer;
-        Mono mono;
-        Poly poly;
+        Mono _mono;
+        Poly _poly;
+        CVGate *_cvGate;
         int _gates[VOICES];
         uint16_t _cvs[VOICES];
-        
-        void _reset(void);
+
         void _updateOutput(void);
 };
 

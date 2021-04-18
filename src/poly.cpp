@@ -2,7 +2,11 @@
 #include "poly.h"
 
 Poly::Poly(void) {
-    _reset();
+    for (int i = 0; i < VOICES; i++) {
+        _notes[i] = 0;
+        _cvs[i] = 0;
+        _lru[i] = -1;
+    }
 }
 
 void Poly::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
@@ -37,14 +41,6 @@ void Poly::getCVGate(uint16_t *cv, int *gate) {
     for (int i = 0; i < VOICES; i++) {
         cv[i] = cvForNote(_notes[i]);
         gate[i] = _notes[i] ? 1 : 0;
-    }
-}
-
-void Poly::_reset(void) {
-    for (int i = 0; i < VOICES; i++) {
-        _notes[i] = 0;
-        _cvs[i] = 0;
-        _lru[i] = -1;
     }
 }
 
@@ -101,7 +97,7 @@ void Poly::_leftShiftLRU(int fromIndex) {
 
 void Poly::debug() {
     return;
-    
+
     printf("LRU\r\n");
     for (int i = 0; i < VOICES; i++) {
         printf("%d:", _lru[i]);

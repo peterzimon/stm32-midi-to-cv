@@ -1,11 +1,23 @@
 #include <stdio.h>
 #include <math.h>
 #include "midi-handler.h"
-#include "settings.h"
 
 void MidiHandler::init(void) {
     _inputBuffer.init(_buffer, MIDI_BUFFER_SIZE);
-    _reset();
+
+    for (int i = 0; i < VOICES; i++) {
+        _cvs[i] = 0;
+        _gates[i] = 0;
+    }
+
+    switch (settings.mode) {
+        case MONO:
+            _cvGate = &_mono;
+            break;
+        case POLY:
+            _cvGate = &_poly;
+            break;
+    }
 }
 
 void MidiHandler::attach(DAC *dac) {
@@ -25,38 +37,15 @@ void MidiHandler::process() {
 }
 
 void MidiHandler::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
-    switch (settings.mode) {
-        case MONO:
-            // TODO: implement mono
-            break;
-        case POLY:
-            poly.noteOff(channel, note, velocity);
-            poly.getCVGate(_cvs, _gates);
-            break;
-    }
+    _cvGate->noteOff(channel, note, velocity);
+    _cvGate->getCVGate(_cvs, _gates);
     _updateOutput();
 }
-
 
 void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
-    switch (settings.mode) {
-        case MONO:
-            // _notes[0] = note; TODO: implement mono
-            break;
-
-        case POLY:
-            poly.noteOn(channel, note, velocity);
-            poly.getCVGate(_cvs, _gates);
-            break;
-    }
+    _cvGate->noteOn(channel, note, velocity);
+    _cvGate->getCVGate(_cvs, _gates);
     _updateOutput();
-}
-
-void MidiHandler::_reset(void) {
-    for (int i = 0; i < VOICES; i++) {
-        _cvs[i] = 0;
-        _gates[i] = 0;
-    }
 }
 
 void MidiHandler::_updateOutput(void) {
@@ -70,5 +59,5 @@ void MidiHandler::debug(void) {
         printf("%d - %d\r\n", i, _cvs[i]);
     }
 
-    poly.debug();
+    // poly.debug();
 }
