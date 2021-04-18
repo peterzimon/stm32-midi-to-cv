@@ -22,7 +22,7 @@
 #include "drivers/serial.h"
 #include "drivers/system.h"
 #include "drivers/ui.h"
-#include "drivers/dac.h"        // TODO: not implemented
+#include "drivers/dac.h"
 #include "midi-handler.h"
 #include "settings.h"
 
@@ -46,6 +46,10 @@ int main(void) {
     midi.attach(&dac);
 
     printf("Let's see y'all naked!\r\n");
+
+    // TODO: test DAC with various values
+    // TODO: implement DAC calibration
+    
     
     while (1) {
         // Read MIDI from serial
