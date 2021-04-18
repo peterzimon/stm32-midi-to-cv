@@ -10,6 +10,9 @@ void MidiHandler::init(void) {
         _gates[i] = 0;
     }
 
+    // The _cvGate pointer will be set to the appropriate implementation of 
+    // the CVGate interface. With this, it's quite easy to add implementations
+    // for new modes.
     switch (settings.mode) {
         case MONO:
             _cvGate = &_mono;

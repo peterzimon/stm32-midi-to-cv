@@ -1,3 +1,7 @@
+/**
+ * Interface class for modes (mono, poly etc.)
+*/
+
 #ifndef CVGATE_H
 #define CVGATE_H
 

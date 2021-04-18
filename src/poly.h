@@ -1,4 +1,6 @@
 /**
+ * Implementation of CVGate interface for mono polyphonic mode.
+ * 
  * Last note priority logic
  * ------------------------
  * 
@@ -16,7 +18,7 @@
  * voices that came in later than the new voice and put the new voice to 
  * the end of the LRU.
  * 
- * Example 1:
+ * Example:
  * 1. Init state, the LRU and AN are empty. 
  *      LRU = [-1,-1,-1,-1]
  *      AN = [0,0,0,0]

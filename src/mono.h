@@ -1,5 +1,7 @@
 /**
- * Channel mapping in mono mode:
+ * Implementation of CVGate interface for mono mode. Channel mapping 
+ * in mono mode is the following:
+ * 
  * CV 1     -> pitch
  * GATE 1   -> gate
  * CV 2     -> velocity
