@@ -10,8 +10,35 @@
  * libraries must be added to .vscode/c_cpp_properties.json includePath 
  * and browse/path.
  * 
+ * Pins
+ * ----
+ * UART2 for serial console logging:
+ *      TX --> PA2
  * 
+ * UART3 for MIDI input:
+ *      RX --> PB11
+ * 
+ * I2C1 for MCP4728:
+ *      PB8 --> I2C1_SCL
+ *      PB9 --> I2C1_SDA
+ * 
+ * GPIO for gates:
+ *      PB12 --> GATE A
+ *      PB13 --> GATE B
+ *      PB14 --> GATE C
+ *      PB15 --> GATE D
+ * 
+ * GPIO for debugging:
+ *      PC13 --> LED
+ *      PB3  --> Debug button
+ * 
+ * !!! HAL Msp callback functions are in drivers/system.cpp !!!
+ * 
+ * ~~~~
  * To be tested:
+ * - moved all HAL Msp functions to system.cpp -> must be re-tested
+ * - HAL include in MCP4728 driver should be conditioned to F1 vs F4
+ * - gate handling is not tested
  * - mono velocity
  * - pitch bend is not implemented
  * - modwheel is not implemented
@@ -23,6 +50,7 @@
 #include "drivers/system.h"
 #include "drivers/ui.h"
 #include "drivers/dac.h"
+#include "drivers/gate.h"
 #include "midi-handler.h"
 #include "settings.h"
 
@@ -31,25 +59,21 @@ System system;
 UI ui;
 MidiHandler midi;
 DAC dac;
+Gate gate;
 Settings settings;
 
 int main(void) {
 
-    settings.mode = MONO;
+    settings.mode = POLY;
 
     system.init();
     ui.init();
     serial.init();
     midi.init();
     dac.init();
-
+    gate.init();
     midi.attach(&dac);
-
-    printf("Let's see y'all naked!\r\n");
-
-    // TODO: test DAC with various values
-    uint16_t values[4] = {1000, 2000, 3000, 4000};
-    dac.write(values);
+    midi.attach(&gate);
     
     while (1) {
         // Read MIDI from serial

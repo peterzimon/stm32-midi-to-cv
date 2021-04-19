@@ -76,57 +76,6 @@ void Serial::_retargetInit(void) {
 }
 
 /**
- * HAL functions
-*/
-extern "C" 
-{
-
-// Init pins that can be used as UART. This is a callback function that is
-// inside HAL_UAR_Init(); and is designed to setup these kinda things.
-// Note that this function is called for all UARTs so we need to check
-// for the given UART.
-void HAL_UART_MspInit(UART_HandleTypeDef * uart) {
-    GPIO_InitTypeDef uartGPIOConfig;
-
-    #ifdef SERIAL_DEBUG
-    // UART2 for serial console logging. Pins:
-    // TX --> PA2
-    // RX --> PA3 - unused
-    if (uart->Instance == USART2) {
-        __HAL_RCC_USART2_CLK_ENABLE();      // Enable UART...
-        __HAL_RCC_GPIOA_CLK_ENABLE();       // ...and the GPIOA port clock.
-
-        uartGPIOConfig.Pin = GPIO_PIN_2;    // This is TX pin to transmit data
-        uartGPIOConfig.Mode = GPIO_MODE_AF_PP;      // I guess this could be GPIO_MODE_AF_PP too
-        uartGPIOConfig.Speed = GPIO_SPEED_FREQ_HIGH;
-
-        HAL_GPIO_Init(GPIOA, &uartGPIOConfig);
-    }
-    #endif
-
-    // MIDI input on UART
-    if (uart->Instance == USART3) {         // Is it UART3
-
-        // UART3 has the following pins on the MCU:
-        // TX --> PB10 - unused TODO: implement midi thru
-        // RX --> PB11
-
-        __HAL_RCC_USART3_CLK_ENABLE();      // Enable UART...
-        __HAL_RCC_GPIOB_CLK_ENABLE();       // ...and the GPIOA port clock.
-
-        uartGPIOConfig.Pin = GPIO_PIN_11;    // This is RX pin for receiving data
-        uartGPIOConfig.Mode = GPIO_MODE_INPUT;
-        uartGPIOConfig.Speed = GPIO_SPEED_FREQ_HIGH;
-        uartGPIOConfig.Pull = GPIO_PULLUP;
-
-        HAL_GPIO_Init(GPIOA, &uartGPIOConfig);
-    }
-}
-
-}
-
-
-/**
  * Retarget standard output. 
  * https://shawnhymel.com/1873/how-to-use-printf-on-stm32/
 */
@@ -200,3 +149,5 @@ int _fstat(int fd, struct stat* st) {
 }
 #endif
 #endif
+
+// Related HAL Msp callback functions in system.cpp

@@ -11,6 +11,7 @@
 #include <midi-parser.h>
 #include <ringbuffer.h>
 #include "drivers/dac.h"
+#include "drivers/gate.h"
 #include "settings.h"
 #include "cvgate.h"
 #include "mono.h"
@@ -22,6 +23,7 @@ class MidiHandler: public MidiParser {
     public:
         void init(void);
         void attach(DAC *dac);
+        void attach(Gate *gate);
         void saveByte(uint8_t byte);
         void process();
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
@@ -30,6 +32,7 @@ class MidiHandler: public MidiParser {
     
     private:
         DAC *_dac;
+        Gate *_gate;
         uint8_t _buffer[MIDI_BUFFER_SIZE];
         RingBuffer _inputBuffer;
         Mono _mono;

@@ -27,6 +27,10 @@ void MidiHandler::attach(DAC *dac) {
     _dac = dac;
 }
 
+void MidiHandler::attach(Gate *gate) {
+    _gate = gate;
+}
+
 void MidiHandler::saveByte(uint8_t byte) {
     _inputBuffer.writeByte(byte);
 }
@@ -52,10 +56,13 @@ void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 }
 
 void MidiHandler::_updateOutput(void) {
-    // Update DAC
+    _dac->write(_cvs);
+    HAL_Delay(10);  // Wait just a tiny bit to make sure all CVs are set before setting gates high
+    _gate->update(_gates);
 }
 
 void MidiHandler::debug(void) {
+#ifdef SERIAL_DEBUG
     printf("Voice - CV\r\n");
     printf("-------------------\r\n");
     for (int i = 0; i < VOICES; i++) {
@@ -63,4 +70,5 @@ void MidiHandler::debug(void) {
     }
 
     _cvGate->debug();
+#endif
 }
