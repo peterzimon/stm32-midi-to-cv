@@ -25,7 +25,6 @@ class Uni: public CVGate {
 
     private:
         uint8_t _note;
-        uint16_t _velocity;
         uint8_t _detuneValue;
         void _reset(void);
 };

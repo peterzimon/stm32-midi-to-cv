@@ -8,7 +8,6 @@ Uni::Uni(void) {
 void Uni::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
     if (_note == note) {
         _note = 0;
-        _velocity = 0;
     }
 }
 
@@ -17,7 +16,6 @@ void Uni::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
         return;
     }
     _note = note;
-    _velocity = velocity;
 }
 
 void Uni::modWheel(uint8_t channel, uint8_t value) {
