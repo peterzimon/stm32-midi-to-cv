@@ -10,6 +10,7 @@
 #define OCTAVES 10
 #define MAX_NOTE_VOLTAGE 4095   // Max voltage to map the midi notes to. 
                                 // Read comment Note in cvgate.cpp::cvForNote()
+#define NAIVE_CALIBRATION 1 // Add this to the number of notes to spread the voltages more (+x) or less (-x)
 
 // Non-note CV
 #define MAX_CV_VOLTAGE 2047 // Since the hardware amplifies the output by A = 1 + (69/47), 
