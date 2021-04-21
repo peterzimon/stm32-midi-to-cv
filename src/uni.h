@@ -2,8 +2,6 @@
  * Implementation of CVGate interface for Unison mode. In this mode all the 
  * CV voices output the same voltage and the modwheel detunes them slightly
  * compared to each other.
- * 
- * TODO: detune implementation
 */
 
 #ifndef UNI_H
@@ -13,7 +11,7 @@
 #include "cvgate.h"
 #include "settings.h"
 
-#define DETUNE_FACTOR 0.2
+#define DETUNE_FACTOR 0.15
 
 class Uni: public CVGate {
     public:
