@@ -61,6 +61,10 @@ void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 }
 
 void MidiHandler::controlChange(uint8_t channel, uint8_t data1, uint8_t data2) {
+    if (settings.mode != UNISON) {  // ATM only these modes implement modwheel
+        return;
+    }
+
     switch (data1)
     {
     case 0x01:      // Mod wheel

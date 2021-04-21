@@ -34,14 +34,22 @@
  * 
  * !!! HAL Msp callback functions are in drivers/system.cpp !!!
  * 
+ * Modes
+ * -----
+ * MONO - Last note priority monophonic mode
+ * POLY - Last note priority 4 voice polyphonic CV out
+ * UNISON - Same CV on all 4 voices with modwheel sequential detune function
+ * CALIBRATION - Calibrate output voltages. All DACs and discrete components 
+ *               in the hardware are different. 
+ * 
+ * 
  * ~~~~
  * To be tested:
- * - moved all HAL Msp functions to system.cpp -> must be re-tested
  * - HAL include in MCP4728 driver should be conditioned to F1 vs F4
- * - gate handling is not tested
  * - mono velocity
  * - pitch bend is not implemented
  * - modwheel is not implemented
+ * - ...global search for "TODO:" biatch!
 */
 #include <string.h>
 #include "stm32f1xx_hal.h"
