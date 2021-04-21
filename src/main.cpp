@@ -64,7 +64,7 @@ Settings settings;
 
 int main(void) {
 
-    settings.mode = MONO;
+    settings.mode = POLY;
 
     system.init();
     ui.init();
