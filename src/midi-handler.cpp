@@ -57,7 +57,6 @@ void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 
 void MidiHandler::_updateOutput(void) {
     _dac->write(_cvs);
-    HAL_Delay(10);  // Wait just a tiny bit to make sure all CVs are set before setting gates high
     _gate->update(_gates);
 }
 

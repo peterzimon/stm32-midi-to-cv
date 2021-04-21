@@ -13,7 +13,7 @@ UART_HandleTypeDef *gHuart;
 
 void Serial::init(void) {
     
-    #ifdef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
     // Initialize UART for console logging on USART2
     consoleUARTConfig.Instance             = USART2;
     consoleUARTConfig.Init.BaudRate        = 115200;
@@ -26,10 +26,10 @@ void Serial::init(void) {
 
     HAL_UART_Init(&consoleUARTConfig);
 
-    #if !defined(OS_USE_SEMIHOSTING)
+#if !defined(OS_USE_SEMIHOSTING)
     _retargetInit();
-    #endif
-    #endif
+#endif
+#endif
 
     // Initialize UART for MIDI communication on USART3
     midiUARTConfig.Instance             = USART3;
