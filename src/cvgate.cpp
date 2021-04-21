@@ -8,7 +8,7 @@
  * device covers 10 octaves we have to map 120 notes (10 octaves) to 0-4095.
  * TODO: pitch bend
 */
-uint16_t CVGate::cvForNote(uint8_t note) {
-    uint8_t notes = (OCTAVES * 12) + NAIVE_CALIBRATION;
+uint16_t CVGate::cvForNote(uint8_t note, int naiveCalibration) {
+    uint8_t notes = (OCTAVES * 12) + naiveCalibration;
     return (uint16_t)Utils::map(note, LOWEST_MIDI_NOTE, (LOWEST_MIDI_NOTE + notes), 0, MAX_NOTE_VOLTAGE);
 }
