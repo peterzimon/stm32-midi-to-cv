@@ -17,7 +17,8 @@
 
 enum Mode {
     MONO,
-    POLY
+    POLY,
+    UNISON
 };
 
 struct Settings

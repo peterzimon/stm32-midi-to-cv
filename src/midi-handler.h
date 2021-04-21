@@ -16,6 +16,7 @@
 #include "cvgate.h"
 #include "mono.h"
 #include "poly.h"
+#include "uni.h"
 
 #define MIDI_BUFFER_SIZE 32
 
@@ -28,6 +29,7 @@ class MidiHandler: public MidiParser {
         void process();
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
+        void controlChange(uint8_t channel, uint8_t data1, uint8_t data2);
         void debug(void);
     
     private:
@@ -37,6 +39,7 @@ class MidiHandler: public MidiParser {
         RingBuffer _inputBuffer;
         Mono _mono;
         Poly _poly;
+        Uni _uni;
         CVGate *_cvGate;
         int _gates[VOICES];
         uint16_t _cvs[VOICES];

@@ -10,15 +10,20 @@ void MidiHandler::init(void) {
         _gates[i] = 0;
     }
 
-    // The _cvGate pointer will be set to the appropriate implementation of 
-    // the CVGate interface. With this, it's quite easy to add implementations
-    // for new modes.
+    /**
+     *  The _cvGate pointer will be set to the appropriate implementation of 
+     * the CVGate interface. With this, it's quite easy to add implementations
+     * for new modes.
+    */
     switch (settings.mode) {
         case MONO:
             _cvGate = &_mono;
             break;
         case POLY:
             _cvGate = &_poly;
+            break;
+        case UNISON:
+            _cvGate = &_uni;
             break;
     }
 }
@@ -53,6 +58,17 @@ void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
     _cvGate->noteOn(channel, note, velocity);
     _cvGate->getCVGate(_cvs, _gates);
     _updateOutput();
+}
+
+void MidiHandler::controlChange(uint8_t channel, uint8_t data1, uint8_t data2) {
+    switch (data1)
+    {
+    case 0x01:      // Mod wheel
+        _cvGate->modWheel(channel, data2);
+        _cvGate->getCVGate(_cvs, _gates);
+        _updateOutput();
+        break;
+    }
 }
 
 void MidiHandler::_updateOutput(void) {

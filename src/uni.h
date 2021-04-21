@@ -1,34 +1,34 @@
 /**
- * Implementation of CVGate interface for mono mode. Channel mapping 
- * in mono mode is the following:
+ * Implementation of CVGate interface for Unison mode. In this mode all the 
+ * CV voices output the same voltage and the modwheel detunes them slightly
+ * compared to each other.
  * 
- * CV 1     -> pitch
- * GATE 1   -> gate
- * CV 2     -> velocity
- * CV 3     -> modwheel
- * 
- * TODO: modwheel implementation
+ * TODO: detune implementation
 */
 
-#ifndef MONO_H
-#define MONO_H
+#ifndef UNI_H
+#define UNI_H
 
 #include <inttypes.h>
 #include "cvgate.h"
 #include "settings.h"
 
-class Mono: public CVGate {
+#define DETUNE_FACTOR 0.2
+
+class Uni: public CVGate {
     public:
-        Mono(void);
+        Uni(void);
 
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
+        void modWheel(uint8_t channel, uint8_t value);
         void getCVGate(uint16_t *cv, int *gate);
         void debug(void);
 
     private:
         uint8_t _note;
         uint16_t _velocity;
+        uint8_t _detuneValue;
         void _reset(void);
 };
 
