@@ -8,13 +8,51 @@ Poly::Poly(void) {
         _lru[i] = -1;
     }
     _polyMode = POLYMODE_DEFAULT;
+    _polyFirstVoice = 0;
+    _polyLastVoice = VOICES;
 }
 
 void Poly::setMode(poly_mode polyMode) {
     _polyMode = polyMode;
+    switch (_polyMode)
+    {
+    case POLYMODE_DEFAULT:
+        _polyFirstVoice = 0;
+        _polyLastVoice = VOICES;
+        break;
+    case POLYMODE_BCH:
+        _polyFirstVoice = 1;
+        _polyLastVoice = VOICES;
+        break;
+    case POLYMODE_CHL:
+        _polyFirstVoice = 0;
+        _polyLastVoice = VOICES - 1;
+        break;
+    }
 }
 
 void Poly::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
+    switch (_polyMode)
+    {
+    case POLYMODE_DEFAULT:
+        break;
+    case POLYMODE_BCH:
+        if (note == _leadNote) {
+            _leadNote = 0;
+            _notes[0] = 0;
+            return;
+        }
+        break;
+    
+    case POLYMODE_CHL:
+        if (note == _leadNote) {
+            _leadNote = 0;
+            _notes[VOICES - 1] = 0;
+            return;
+        }
+        break;
+    }
+    
     int voice = _findVoice(note);
     if (voice == -1) {
         return;
@@ -26,6 +64,27 @@ void Poly::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
 }
 
 void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
+    switch (_polyMode)
+    {
+    case POLYMODE_DEFAULT:
+        break;
+    case POLYMODE_BCH:
+        if (note < CHORD_LEAD_BORDER_NOTE) {
+            _leadNote = note;
+            _notes[0] = note;
+            return;
+        }
+        break;
+    
+    case POLYMODE_CHL:
+        if (note >= CHORD_LEAD_BORDER_NOTE) {
+            _leadNote = note;
+            _notes[VOICES - 1] = note;
+            return;
+        }
+        break;
+    }
+
     if (_findVoice(note) != -1) {
         return;
     }
@@ -36,7 +95,7 @@ void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
     } else {
         voice = _lru[0];
         _leftShiftLRU(1);
-        _lru[VOICES - 1] = voice;
+        _lru[_polyLastVoice - 1] = voice;
     }
 
     _notes[voice] = note;
@@ -69,7 +128,7 @@ void Poly::getCVGate(uint16_t *cv, int *gate) {
 }
 
 int Poly::_findVoice(uint8_t note) {
-    for (int i = 0; i < VOICES; i++) {
+    for (int i = _polyFirstVoice; i < _polyLastVoice; i++) {
         if (_notes[i] == note) return i;
     }
     return -1;
@@ -77,14 +136,14 @@ int Poly::_findVoice(uint8_t note) {
 
 int Poly::_findVoiceLRUIndex(int voice) {
     if (voice < 0) return 0;
-    for (int i = 0; i < VOICES; i++) {
+    for (int i = _polyFirstVoice; i < _polyLastVoice; i++) {
         if (_lru[i] == voice) return i;
     }
     return -1;
 }
 
 int Poly::_findInactiveVoice(void) {
-    for (int i = 0; i < VOICES; i++) {
+    for (int i = _polyFirstVoice; i < _polyLastVoice; i++) {
         if (!_notes[i]) {
             return i;
         }
@@ -93,7 +152,7 @@ int Poly::_findInactiveVoice(void) {
 }
 
 void Poly::_addVoiceToLRU(int voice) {
-    for (int i = 0; i < VOICES; i++) {
+    for (int i = _polyFirstVoice; i < _polyLastVoice; i++) {
         if (_lru[i] == -1) {
             _lru[i] = voice;
             return;
@@ -102,7 +161,7 @@ void Poly::_addVoiceToLRU(int voice) {
 }
 
 void Poly::_removeVoiceFromLRU(int voice) {
-    for (int i = 0; i < VOICES; i++) {
+    for (int i = _polyFirstVoice; i < _polyLastVoice; i++) {
         if (_lru[i] == voice) {
             _lru[i] = -1;
             return;
@@ -112,7 +171,7 @@ void Poly::_removeVoiceFromLRU(int voice) {
 
 void Poly::_leftShiftLRU(int fromIndex) {
     if (fromIndex == 0) return;
-    for (int i = 0; i < VOICES; i++) {
+    for (int i = _polyFirstVoice; i < _polyLastVoice; i++) {
         if (i >= fromIndex) {
             _lru[i - 1] = _lru[i];
         }

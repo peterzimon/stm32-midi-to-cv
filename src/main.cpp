@@ -1,9 +1,10 @@
 /**
- * MIDI to 4 polyphonic CV out 
- * ---------------------------
+ * MIDIPOLY - MIDI to CV converter 
+ * -------------------------------
  * Platform: STM32F103 + PlatformIO using ST LINK V2 for programming
  * Framework: STM32CUBE
- * Hardware: MCP4728 DAC + standard MIDI Input using 6N138 optoisolator
+ * Hardware: MCP4728 DAC + standard MIDI Input using 6N138 optoisolator. CD4504 
+ *           level shifter for gate outputs.
  * Optional: UART/TTL converter for serial debug
  * 
  * Uses Shmoergh stm32lib: https://github.com/peterzimon/stm32lib. These
@@ -84,7 +85,7 @@ Settings settings;
 
 int main(void) {
 
-    settings.mode = CIRCULAR;
+    settings.mode = POLY;
 
     system.init();
     ui.init();

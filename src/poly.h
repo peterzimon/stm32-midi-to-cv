@@ -85,6 +85,8 @@
 #include "cvgate.h"
 #include "settings.h"
 
+#define CHORD_LEAD_BORDER_NOTE 60 // The note number that separates chords vs. bass/lead note in BCH/CHL mode
+
 enum poly_mode {
     POLYMODE_DEFAULT,
     POLYMODE_BCH, // Bass + chords
@@ -103,10 +105,12 @@ class Poly: public CVGate {
 
     private:
         poly_mode _polyMode;
+        uint8_t _leadNote;
         uint8_t _notes[VOICES];
         uint16_t _cvs[VOICES];
         int _lru[VOICES];
-
+        int _polyFirstVoice; // Used for setting the chord voices in various modes
+        int _polyLastVoice;
         int _findVoice(uint8_t note);
         int _findVoiceLRUIndex(int voice);
         int _findInactiveVoice(void);
