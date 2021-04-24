@@ -56,6 +56,7 @@
  * 
  * ~~~~
  * To be tested:
+ * - all modes
  * - HAL include in MCP4728 driver should be conditioned to F1 vs F4
  * - mono velocity
  * - pitch bend is not implemented
@@ -83,7 +84,7 @@ Settings settings;
 
 int main(void) {
 
-    settings.mode = CIRCULAR;
+    settings.mode = UNISON;
 
     system.init();
     ui.init();

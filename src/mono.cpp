@@ -22,25 +22,60 @@ void Mono::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
     }
     _note = note;
     _velocity = velocity;
-    _lastcv++; // Circulate cv out index
-    if (_lastcv > (VOICES - 1)) {
-        _lastcv = 0;
+
+    switch (_monoMode)
+    {
+    case MONOMODE_DEFAULT:
+        break;
+
+    case MONOMODE_CIRCULAR:
+        _lastcv++; // Circulate cv out index
+        if (_lastcv > (VOICES - 1)) {
+            _lastcv = 0;
+        }
+        break;
+    
+    case MONOMODE_UNISON:
+        break;
+    }
+}
+
+void Mono::modWheel(uint8_t channel, uint8_t value) {
+    switch (_monoMode)
+    {
+    case MONOMODE_DEFAULT:
+    case MONOMODE_CIRCULAR:
+        break;
+
+    case MONOMODE_UNISON:
+        _detuneValue = value;
+        break;
     }
 }
 
 void Mono::getCVGate(uint16_t *cv, int *gate) {
+    uint16_t cvOut;
+
     switch (_monoMode)
     {
+    case MONOMODE_DEFAULT: // Simple mono mode
+        cv[0] = cvForNote(_note);
+        cv[1] = Utils::map(_velocity, 0, 127, 0, MAX_CV_VOLTAGE);
+        gate[0] = _note ? 1 : 0;
+        break;
+
     case MONOMODE_CIRCULAR:
         _zeroAllVoices(cv, gate);
         cv[_lastcv] = cvForNote(_note);
         gate[_lastcv] = _note ? 1 : 0;
         break;
     
-    default: // Simple mono mode
-        cv[0] = cvForNote(_note);
-        cv[1] = Utils::map(_velocity, 0, 127, 0, MAX_CV_VOLTAGE);
-        gate[0] = _note ? 1 : 0;
+    case MONOMODE_UNISON:
+        cvOut = cvForNote(_note);
+        for (int i = 0; i < VOICES; i++) {
+            cv[i] = cvOut + (i * DETUNE_FACTOR * _detuneValue);
+            gate[i] = _note ? 1 : 0;
+        }
         break;
     }
 }

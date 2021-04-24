@@ -14,9 +14,8 @@
 #include "drivers/gate.h"
 #include "settings.h"
 #include "cvgate.h"
-#include "modes/mono.h"
-#include "modes/poly.h"
-#include "modes/uni.h"
+#include "mono.h"
+#include "poly.h"
 
 #define MIDI_BUFFER_SIZE 32
 
@@ -39,7 +38,6 @@ class MidiHandler: public MidiParser {
         RingBuffer _inputBuffer;
         Mono _mono;
         Poly _poly;
-        Uni _uni;
         CVGate *_cvGate;
         int _gates[VOICES];
         uint16_t _cvs[VOICES];

@@ -25,7 +25,8 @@ void MidiHandler::init(void) {
             _mono.setMode(MONOMODE_CIRCULAR);
             break;
         case UNISON:
-            _cvGate = &_uni;
+            _cvGate = &_mono;
+            _mono.setMode(MONOMODE_UNISON);
             break;
         case POLY:
             _cvGate = &_poly;
