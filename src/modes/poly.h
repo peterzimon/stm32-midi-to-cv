@@ -85,16 +85,24 @@
 #include "cvgate.h"
 #include "settings.h"
 
+enum poly_mode {
+    POLYMODE_DEFAULT,
+    POLYMODE_BCH, // Bass + chords
+    POLYMODE_CHL // Chords + lead
+};
+
 class Poly: public CVGate {
     public:
         Poly();
 
+        void setMode(poly_mode polyMode);
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
         void getCVGate(uint16_t *cv, int *gate);
         void debug();
 
     private:
+        poly_mode _polyMode;
         uint8_t _notes[VOICES];
         uint16_t _cvs[VOICES];
         int _lru[VOICES];

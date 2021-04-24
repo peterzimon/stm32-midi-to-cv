@@ -99,7 +99,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef * uart) {
         uartGPIOConfig.Speed = GPIO_SPEED_FREQ_HIGH;
         uartGPIOConfig.Pull = GPIO_PULLUP;
 
-        HAL_GPIO_Init(GPIOA, &uartGPIOConfig);
+        HAL_GPIO_Init(GPIOB, &uartGPIOConfig);
     }
 }
 

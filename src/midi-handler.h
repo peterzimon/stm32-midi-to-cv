@@ -14,9 +14,9 @@
 #include "drivers/gate.h"
 #include "settings.h"
 #include "cvgate.h"
-#include "mono.h"
-#include "poly.h"
-#include "uni.h"
+#include "modes/mono.h"
+#include "modes/poly.h"
+#include "modes/uni.h"
 
 #define MIDI_BUFFER_SIZE 32
 

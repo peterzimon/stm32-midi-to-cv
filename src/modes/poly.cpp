@@ -7,6 +7,11 @@ Poly::Poly(void) {
         _cvs[i] = 0;
         _lru[i] = -1;
     }
+    _polyMode = POLYMODE_DEFAULT;
+}
+
+void Poly::setMode(poly_mode polyMode) {
+    _polyMode = polyMode;
 }
 
 void Poly::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {

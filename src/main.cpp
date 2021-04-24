@@ -34,11 +34,22 @@
  * 
  * !!! HAL Msp callback functions are in drivers/system.cpp !!!
  * 
- * Modes
- * -----
+ * Playback modes
+ * --------------
+ * Short press the button to switch between playback modes.
+ * 
  * MONO - Last note priority monophonic mode
- * POLY - Last note priority 4 voice polyphonic CV out
+ * CIRCULAR - CVs output notes, one at a time in a circular fashion
  * UNISON - Same CV on all 4 voices with modwheel sequential detune function
+ * POLY - Last note priority 4 voice polyphonic CV out
+ * BCH - 1 note bass + 3 note chords on top
+ * CHL - 3 note chords on bottom + 1 note lead on top
+ * 
+ * Settings
+ * --------
+ * To enter settings, long press the button. All leds flash rapidly if in this
+ * mode.
+ * 
  * CALIBRATION - Calibrate output voltages. All DACs and discrete components 
  *               in the hardware are different. 
  * 
@@ -72,7 +83,7 @@ Settings settings;
 
 int main(void) {
 
-    settings.mode = UNISON;
+    settings.mode = CIRCULAR;
 
     system.init();
     ui.init();

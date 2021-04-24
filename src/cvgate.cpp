@@ -21,5 +21,5 @@ uint16_t CVGate::cvForNote(uint8_t note, int naiveCalibration) {
  *    1000 and the add the bend value(?)
 */
 uint16_t CVGate::pitchBend(uint32_t bend) {
-
+    return 0;
 }

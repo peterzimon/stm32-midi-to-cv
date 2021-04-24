@@ -18,12 +18,26 @@ void MidiHandler::init(void) {
     switch (settings.mode) {
         case MONO:
             _cvGate = &_mono;
+            _mono.setMode(MONOMODE_DEFAULT);
             break;
-        case POLY:
-            _cvGate = &_poly;
+        case CIRCULAR:
+            _cvGate = &_mono;
+            _mono.setMode(MONOMODE_CIRCULAR);
             break;
         case UNISON:
             _cvGate = &_uni;
+            break;
+        case POLY:
+            _cvGate = &_poly;
+            _poly.setMode(POLYMODE_DEFAULT);
+            break;
+        case BCH:
+            _cvGate = &_poly;
+            _poly.setMode(POLYMODE_BCH);
+            break;
+        case CHL:
+            _cvGate = &_poly;
+            _poly.setMode(POLYMODE_CHL);
             break;
     }
 }
@@ -61,13 +75,13 @@ void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 }
 
 void MidiHandler::controlChange(uint8_t channel, uint8_t data1, uint8_t data2) {
-    if (settings.mode != UNISON) {  // ATM only these modes implement modwheel
+    if (settings.mode != UNISON) { // ATM only these modes implement modwheel. TODO: test performance if this condition is removed
         return;
     }
 
     switch (data1)
     {
-    case 0x01:      // Mod wheel
+    case 0x01: // Mod wheel
         _cvGate->modWheel(channel, data2);
         _cvGate->getCVGate(_cvs, _gates);
         _updateOutput();

@@ -15,15 +15,18 @@
 #define MAX_CV_VOLTAGE 2047 // Since the hardware amplifies the output by A = 1 + (69/47), 
                             // a max of 2047 will result in cca. +5V
 
-enum Mode {
+enum device_mode {
     MONO,
+    CIRCULAR,
+    UNISON,
     POLY,
-    UNISON
+    BCH,
+    CHL
 };
 
 struct Settings
 {
-    Mode mode;
+    device_mode mode;
 };
 
 extern Settings settings;

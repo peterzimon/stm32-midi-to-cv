@@ -27,7 +27,7 @@ void Uni::getCVGate(uint16_t *cv, int *gate) {
     for (int i = 0; i < VOICES; i++) {
         cv[i] = cvOut + (i * DETUNE_FACTOR * _detuneValue);
     }
-    gate[0] = gate[1] = gate[2] = gate[3] = _note ? 1 : 0;
+    gate[0] = gate[1] = gate[2] = gate[3] = _note ? 1 : 0;  // TODO: adjust this to any number of VOICES
 }
 
 void Uni::_reset(void) {
