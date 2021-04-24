@@ -75,7 +75,7 @@ void Mono::getCVGate(uint16_t *cv, int *gate) {
     case MONOMODE_UNISON:
         cvOut = cvForNote(_note);
         for (int i = 0; i < VOICES; i++) {
-            cv[i] = cvOut + (i * DETUNE_FACTOR * _detuneValue);
+            cv[i] = cvOut + (i * UNISON_DETUNE_FACTOR * _detuneValue);
             gate[i] = _note ? 1 : 0;
         }
         break;

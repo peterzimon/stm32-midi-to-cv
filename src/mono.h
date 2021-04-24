@@ -1,6 +1,9 @@
 /**
- * Implementation of CVGate interface for mono playback. The following device
- * modes are implemented here:
+ * Implementation of CVGate interface for mono playback. All mono mode works
+ * with note history, so if you play a C, then a D and release D then C will
+ * be played.
+ * 
+ * The following device modes are implemented here:
  * 
  * MONO
  * ----
@@ -14,7 +17,8 @@
  * 
  * CIRCULAR
  * --------
- * In circular mode, the voice (CV+Gate) output is looping like: 1>2>3>4>1...
+ * In circular mode, the voice (CV+Gate) output is looping like: 1 > 2 > 3 > 4 
+ * > 1...
  * 
  * TODO: modwheel implementation
  * 
@@ -33,7 +37,7 @@
 #include "cvgate.h"
 #include "settings.h"
 
-#define DETUNE_FACTOR 0.09
+#define UNISON_DETUNE_FACTOR 0.09
 #define NOTE_STACK_SIZE 10
 
 enum mono_mode {
