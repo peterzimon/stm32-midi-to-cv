@@ -84,7 +84,7 @@ Settings settings;
 
 int main(void) {
 
-    settings.mode = UNISON;
+    settings.mode = CIRCULAR;
 
     system.init();
     ui.init();
