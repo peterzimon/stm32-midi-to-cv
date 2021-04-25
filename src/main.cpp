@@ -51,8 +51,10 @@
  * To enter settings, long press the button. All leds flash rapidly if in this
  * mode.
  * 
- * CALIBRATION - Calibrate output voltages. All DACs and discrete components 
- *               in the hardware are different. 
+ * Calibration
+ * -----------
+ * ATM calibration is only possible through code. No interface. See details
+ * in cvgate.h
  * 
  * 
  * ~~~~
@@ -85,7 +87,7 @@ Settings settings;
 
 int main(void) {
 
-    settings.mode = UNISON;
+    settings.mode = POLY;
 
     system.init();
     ui.init();
