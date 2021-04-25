@@ -9,8 +9,16 @@ CVGate::CVGate() {
             _cal[i][j] = 0;
         }
     }
-    // Set calibration values
-    // _cal[VOICE][C note on OCTAVE x] = ADJUSTMENT (_not_ absolute value)
+    
+    /**
+     * Set _cal calibration values here. How? Read the header comment in cvgate.h
+     * 
+     * _cal[VOICE][Cx] = RELATIVE ADJUSTMENT VALUE
+     *        ^     ^              ^ 
+     *        ^     ^              Use negative values to decrease the CV output
+     *        ^     C note on given octave. Should output xV (C1 -> 1V, C2 -> 2V etc.) [0-10]
+     *        CV output [0-3]
+    */
 
     // Voice A
     _cal[0][1] = -18;
