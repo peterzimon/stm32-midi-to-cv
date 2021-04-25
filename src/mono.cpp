@@ -56,26 +56,23 @@ void Mono::modWheel(uint8_t channel, uint8_t value) {
 }
 
 void Mono::getCVGate(uint16_t *cv, int *gate) {
-    uint16_t cvOut;
-
     switch (_monoMode)
     {
     case MONOMODE_DEFAULT:
-        cv[0] = cvForNote(_note);
+        cv[0] = cvForNote(_note, 0);
         cv[1] = Utils::map(_velocity, 0, 127, 0, MAX_CV_VOLTAGE);
         gate[0] = _note ? 1 : 0;
         break;
 
     case MONOMODE_CIRCULAR:
         _zeroAllVoices(cv, gate);
-        cv[_lastcv] = cvForNote(_note);
+        cv[_lastcv] = cvForNote(_note, _lastcv);
         gate[_lastcv] = _note ? 1 : 0;
         break;
     
     case MONOMODE_UNISON:
-        cvOut = cvForNote(_note);
         for (int i = 0; i < VOICES; i++) {
-            cv[i] = cvOut + (i * UNISON_DETUNE_FACTOR * _detuneValue);
+            cv[i] = cvForNote(_note, i) + (i * UNISON_DETUNE_FACTOR * _detuneValue);
             gate[i] = _note ? 1 : 0;
         }
         break;

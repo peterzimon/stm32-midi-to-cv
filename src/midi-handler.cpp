@@ -40,6 +40,9 @@ void MidiHandler::init(void) {
             _cvGate = &_poly;
             _poly.setMode(POLYMODE_CHL);
             break;
+        case QUAD:
+            _cvGate = &_quad;
+            break;
     }
 }
 

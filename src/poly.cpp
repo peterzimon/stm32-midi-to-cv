@@ -106,24 +106,9 @@ void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
  * of how much the 10 octaves should be spread out. This needs to be done properly!
 */
 void Poly::getCVGate(uint16_t *cv, int *gate) {
-
-    int naiveCalibration = 0;
-
-    for (int i = 0; i < VOICES; i++) {
-
-        switch (i)
-        {
-        case 0: // DAC Channel A
-        case 1: // DAC Channel B
-            naiveCalibration = 0;
-            break;
-        case 2: // DAC Channel C
-            naiveCalibration = -1;
-            break;
-        }
-
-        cv[i] = cvForNote(_notes[i], naiveCalibration);
-        gate[i] = _notes[i] ? 1 : 0;
+    for (int voice = 0; voice < VOICES; voice++) {
+        cv[voice] = cvForNote(_notes[voice], voice);
+        gate[voice] = _notes[voice] ? 1 : 0;
     }
 }
 

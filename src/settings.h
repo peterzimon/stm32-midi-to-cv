@@ -21,7 +21,8 @@ enum device_mode {
     UNISON,
     POLY,
     BCH,
-    CHL
+    CHL,
+    QUAD
 };
 
 struct Settings

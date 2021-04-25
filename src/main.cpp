@@ -85,7 +85,7 @@ Settings settings;
 
 int main(void) {
 
-    settings.mode = POLY;
+    settings.mode = UNISON;
 
     system.init();
     ui.init();
