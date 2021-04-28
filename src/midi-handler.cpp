@@ -54,6 +54,10 @@ void MidiHandler::attach(Gate *gate) {
     _gate = gate;
 }
 
+void MidiHandler::attach(UI *ui) {
+    _ui = ui;
+}
+
 void MidiHandler::saveByte(uint8_t byte) {
     _inputBuffer.writeByte(byte);
 }
@@ -96,6 +100,7 @@ void MidiHandler::controlChange(uint8_t channel, uint8_t data1, uint8_t data2) {
 void MidiHandler::_updateOutput(void) {
     _dac->write(_cvs);
     _gate->update(_gates);
+    _ui->updateLeds(_gates);
 }
 
 void MidiHandler::debug(void) {

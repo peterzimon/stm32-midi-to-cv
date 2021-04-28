@@ -17,6 +17,7 @@
 #include "mono.h"
 #include "poly.h"
 #include "quad.h"
+#include "ui.h"
 
 #define MIDI_BUFFER_SIZE 32
 
@@ -25,6 +26,7 @@ class MidiHandler: public MidiParser {
         void init(void);
         void attach(DAC *dac);
         void attach(Gate *gate);
+        void attach(UI *ui);
         void saveByte(uint8_t byte);
         void process();
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
@@ -35,6 +37,7 @@ class MidiHandler: public MidiParser {
     private:
         DAC *_dac;
         Gate *_gate;
+        UI *_ui;
         uint8_t _buffer[MIDI_BUFFER_SIZE];
         RingBuffer _inputBuffer;
         Mono _mono;

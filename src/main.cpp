@@ -19,15 +19,22 @@
  * UART3 for MIDI input:
  *      RX --> PB11
  * 
- * I2C1 for MCP4728:
+ * I2C1 for MCP4728 (drivers/dac):
  *      PB8 --> I2C1_SCL
  *      PB9 --> I2C1_SDA
  * 
- * GPIO for gates:
+ * GPIO for gates (drivers/gate):
  *      PB12 --> GATE A
  *      PB13 --> GATE B
  *      PB14 --> GATE C
  *      PB15 --> GATE D
+ * 
+ * UI GPIO pins (drivers/ui):
+ *      PA4 --> LED A
+ *      PA5 --> LED B
+ *      PA6 --> LED C
+ *      PA7 --> LED D
+ *      PB0 --> Mode button
  * 
  * GPIO for debugging:
  *      PC13 --> LED
@@ -59,7 +66,8 @@
  * 
  * ~~~~
  * To be tested:
- * - all modes
+ * - all modes, QUAD never been tested, BCH and CHL work pretty unreliably
+ * - test 5V supply
  * - HAL include in MCP4728 driver should be conditioned to F1 vs F4
  * - mono velocity
  * - pitch bend is not implemented
@@ -71,41 +79,42 @@
 
 #include "drivers/serial.h"
 #include "drivers/system.h"
-#include "drivers/ui.h"
 #include "drivers/dac.h"
 #include "drivers/gate.h"
 #include "midi-handler.h"
 #include "settings.h"
+#include "ui.h"
 
 Serial serial;
 System system;
-UI ui;
 MidiHandler midi;
 DAC dac;
 Gate gate;
 Settings settings;
+UI ui;
 
 int main(void) {
 
     settings.mode = POLY;
 
     system.init();
-    ui.init();
     serial.init();
     midi.init();
     dac.init();
     gate.init();
+    ui.init();
+
     midi.attach(&dac);
     midi.attach(&gate);
+    midi.attach(&ui);
     
     while (1) {
-        // Read MIDI from serial
         if (serial.midiReadable()) {
             midi.saveByte(serial.midiRead());
         }
 
-        // Process MIDI and convert to CV
         midi.process();
+        ui.process();
 
 #ifdef SERIAL_DEBUG
         // Debug: print notes and CV values when button is pressed

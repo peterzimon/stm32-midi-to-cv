@@ -2,6 +2,7 @@
 #define SYSTEM_H
 
 #include "stm32f1xx_hal.h"
+#include "settings.h"
 
 class System {
     public: 

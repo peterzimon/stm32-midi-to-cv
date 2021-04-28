@@ -4,12 +4,6 @@
 #include "stm32f1xx_hal.h"
 #include "settings.h"
 
-#define GATE_PORT       GPIOB
-#define GATE_A          GPIO_PIN_12
-#define GATE_B          GPIO_PIN_13
-#define GATE_C          GPIO_PIN_14
-#define GATE_D          GPIO_PIN_15
-
 class Gate {
     public:
         void init(void);
