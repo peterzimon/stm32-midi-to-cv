@@ -6,15 +6,15 @@ void UI::init(void) {
 }
 
 void UI::process() {
-
+    
 }
 
 void UI::ledOn(uint16_t voice) {
-    HAL_GPIO_WritePin(VOICE_LED_PORT, _leds[voice], GPIO_PIN_SET);
+    leds.on(voice);
 }
 
 void UI::ledOff(uint16_t voice) {
-    HAL_GPIO_WritePin(VOICE_LED_PORT, _leds[voice], GPIO_PIN_RESET);
+    leds.off(voice);
 }
 
 void UI::updateLeds(int *gates) {

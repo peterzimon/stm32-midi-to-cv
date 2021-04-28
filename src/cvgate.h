@@ -14,8 +14,8 @@
  * 1. Set Midipoly to Unison mode and make sure the mod wheel is turned all the way
  *    down. This way all the CV outputs will be the same. Use a precision multimeter
  *    and measure the output voltage of CV A. Note that when you don't press a key
- *    the output voltage is not precisely 0V according to leakage current. This is
- *    something you can't calibrate.
+ *    the output voltage is not precisely 0V due to imperfection and leakage current. 
+ *    This is something you can't calibrate.
  * 2. Press C1 on your MIDI keyboard. You should read around 1V on the multimeter.
  *    If it's higher than 1V then you'll need to set an adjustment value for the 
  *    1st voice's 1st octave C. In order to do this, open cvgate.cpp and set the

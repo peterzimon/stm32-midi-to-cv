@@ -19,3 +19,11 @@ void LEDs::init(void) {
     HAL_GPIO_Init(BUILT_IN_LED_PORT, &GPIOInitStruct);
     HAL_GPIO_WritePin(BUILT_IN_LED_PORT, BUILT_IN_LED_PIN, GPIO_PIN_SET);
 }
+
+void LEDs::on(uint16_t led) {
+    HAL_GPIO_WritePin(VOICE_LED_PORT, _leds[led], GPIO_PIN_SET);
+}
+
+void LEDs::off(uint16_t led) {
+    HAL_GPIO_WritePin(VOICE_LED_PORT, _leds[led], GPIO_PIN_RESET);
+}

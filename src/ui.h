@@ -17,9 +17,6 @@ class UI {
         void ledOn(uint16_t voice);
         void ledOff(uint16_t voice);
         void updateLeds(int *gates);
-
-    private:
-        uint16_t _leds[4] = {VOICE_A_LED_PIN, VOICE_B_LED_PIN, VOICE_C_LED_PIN, VOICE_D_LED_PIN};
 };
 
 #endif
