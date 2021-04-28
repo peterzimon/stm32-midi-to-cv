@@ -92,9 +92,6 @@ uint16_t CVGate::cvForNote(uint8_t note, int voice) {
     uint16_t cv = (uint16_t)Utils::map(rawCV, rawCVlo, rawCVhi, (rawCVlo + _cal[voice][octave - 1]), (rawCVhi + _cal[voice][octave]));
 
     return cv;
-    
-    // uint8_t notes = (OCTAVES * 12;
-    // return (uint16_t)Utils::map(note, LOWEST_MIDI_NOTE, (LOWEST_MIDI_NOTE + notes), 0, MAX_NOTE_VOLTAGE);
 }
 
 /**
