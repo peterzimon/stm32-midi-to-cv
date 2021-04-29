@@ -37,6 +37,9 @@
 #define GATE_C                  GPIO_PIN_14
 #define GATE_D                  GPIO_PIN_15
 
+// UI constants
+#define BLINK_DURATION          100
+
 enum device_mode {
     MONO,
     CIRCULAR,

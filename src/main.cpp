@@ -119,8 +119,10 @@ int main(void) {
 #ifdef SERIAL_DEBUG
         // Debug: print notes and CV values when button is pressed
         if (!HAL_GPIO_ReadPin(DEBUG_BUTTON_PORT, DEBUG_BUTTON_PIN)) {
-            midi.debug();
-            HAL_Delay(500); // Debounce
+            int v[VOICES] = {1, 0, 1, 0};
+            ui.blink(v, 5);
+            // midi.debug();
+            HAL_Delay(20); // Debounce
         }
 #endif
 

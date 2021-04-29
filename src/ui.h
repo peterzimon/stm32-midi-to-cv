@@ -17,6 +17,17 @@ class UI {
         void ledOn(uint16_t voice);
         void ledOff(uint16_t voice);
         void updateLeds(int *gates);
+        void blink(void);
+        void blink(int *voices, uint8_t times);
+    
+    private:
+        uint32_t _startBlink = 0;
+        bool _blinkOn = false;
+        bool _blinkStarted = false;
+        uint8_t _blink = 0;
+        int _blinkLeds[VOICES];
+
+        void _processBlink(void);
 };
 
 #endif
