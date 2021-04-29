@@ -17,16 +17,20 @@ class UI {
         void ledOn(uint16_t voice);
         void ledOff(uint16_t voice);
         void updateLeds(int *gates);
-        void blink(void);
-        void blink(int *voices, uint8_t times);
+        void blink(int *voices, uint8_t times, uint16_t *delay = 0);
     
     private:
-        uint32_t _startBlink = 0;
-        bool _blinkOn = false;
-        bool _blinkStarted = false;
-        uint8_t _blink = 0;
+        uint32_t _debounce = 0;
+        GPIO_PinState _lastModeButtonState = GPIO_PIN_SET;
+        uint32_t _blinkStartTime[VOICES] = {0, 0, 0, 0};
+        uint16_t _blinkDelay[VOICES] = {0, 0, 0, 0};
+        uint8_t _blink[VOICES] = {0, 0, 0, 0};
+        bool _blinkStarted[VOICES] = {false, false, false, false};
+        bool _blinkOn[VOICES] = {false, false, false, false};
         int _blinkLeds[VOICES];
 
+
+        void _listen(void);
         void _processBlink(void);
 };
 

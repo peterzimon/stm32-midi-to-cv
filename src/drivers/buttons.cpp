@@ -13,3 +13,7 @@ void Buttons::init(void) {
     GPIOInitStruct.Pull     = GPIO_PULLUP;
     HAL_GPIO_Init(DEBUG_BUTTON_PORT, &GPIOInitStruct);
 }
+
+GPIO_PinState Buttons::readButton(GPIO_TypeDef *port, uint16_t pin) {
+    return HAL_GPIO_ReadPin(port, pin);
+}

@@ -10,6 +10,10 @@ void MidiHandler::init(void) {
         _gates[i] = 0;
     }
 
+    setMode();
+}
+
+void MidiHandler::setMode(void) {
     /**
      *  The _cvGate pointer will be set to the appropriate implementation of 
      * the CVGate interface. With this, it's quite easy to add implementations
@@ -67,6 +71,10 @@ void MidiHandler::process() {
         uint8_t byte = 0;
         _inputBuffer.readByte(byte);
         this->parseByte(byte);  // Parent class call
+    }
+    if (settings.modeDirty) {
+        setMode();
+        settings.modeDirty = false;
     }
 }
 

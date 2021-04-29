@@ -39,6 +39,7 @@
 
 // UI constants
 #define BLINK_DURATION          100
+#define BUTTON_DEBOUNCE         250
 
 enum device_mode {
     MONO,
@@ -53,6 +54,7 @@ enum device_mode {
 struct Settings
 {
     device_mode mode;
+    bool modeDirty; // Used for flagging if settings been updated
 };
 
 extern Settings settings;

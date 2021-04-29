@@ -24,6 +24,7 @@
 class MidiHandler: public MidiParser {
     public:
         void init(void);
+        void setMode(void);
         void attach(DAC *dac);
         void attach(Gate *gate);
         void attach(UI *ui);

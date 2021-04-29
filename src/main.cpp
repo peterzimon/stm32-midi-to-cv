@@ -95,7 +95,8 @@ UI ui;
 
 int main(void) {
 
-    settings.mode = POLY;
+    settings.mode = MONO;
+    settings.modeDirty = false;
 
     system.init();
     serial.init();
@@ -119,10 +120,10 @@ int main(void) {
 #ifdef SERIAL_DEBUG
         // Debug: print notes and CV values when button is pressed
         if (!HAL_GPIO_ReadPin(DEBUG_BUTTON_PORT, DEBUG_BUTTON_PIN)) {
-            int v[VOICES] = {1, 0, 1, 0};
-            ui.blink(v, 5);
+            // int v[VOICES] = {1, 0, 1, 0};
+            // ui.blink(v, 5);
             // midi.debug();
-            HAL_Delay(20); // Debounce
+            // HAL_Delay(20); // Debounce
         }
 #endif
 
