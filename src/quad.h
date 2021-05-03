@@ -19,6 +19,7 @@ class Quad: public CVGate {
         void debug(void);
 
     private:
+        uint8_t _latchNotes[VOICES];
         uint8_t _notes[VOICES];
         void _reset(void);
 };

@@ -95,7 +95,7 @@ UI ui;
 
 int main(void) {
 
-    settings.mode = POLY;
+    settings.mode = MONO;
     settings.modeDirty = false;
 
     system.init();
