@@ -22,7 +22,7 @@ void Mono::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
         return;
     }
     _pushNote(note);
-    _note = _noteStack[0];
+    _note = _latchNote = _noteStack[0];
     _velocity = velocity;
 
     switch (_monoMode)
@@ -59,20 +59,20 @@ void Mono::getCVGate(uint16_t *cv, int *gate) {
     switch (_monoMode)
     {
     case MONOMODE_DEFAULT:
-        cv[0] = cvForNote(_note, 0);
+        cv[0] = cvForNote(_latchNote, 0);
         cv[1] = Utils::map(_velocity, 0, 127, 0, MAX_CV_VOLTAGE);
         gate[0] = _note ? 1 : 0;
         break;
 
     case MONOMODE_CIRCULAR:
         _zeroAllVoices(cv, gate);
-        cv[_lastcv] = cvForNote(_note, _lastcv);
+        cv[_lastcv] = cvForNote(_latchNote, _lastcv);
         gate[_lastcv] = _note ? 1 : 0;
         break;
     
     case MONOMODE_UNISON:
         for (int i = 0; i < VOICES; i++) {
-            cv[i] = cvForNote(_note, i) + (i * UNISON_DETUNE_FACTOR * _detuneValue);
+            cv[i] = cvForNote(_latchNote, i) + (i * UNISON_DETUNE_FACTOR * _detuneValue);
             gate[i] = _note ? 1 : 0;
         }
         break;
@@ -92,8 +92,11 @@ void Mono::_pushNote(uint8_t note) {
     }
     int i = 0;
     int temp = _noteStack[i], temp2;
-    while (temp) // Quit loop as soon as note is 0
-    {
+
+    // Quit loop as soon as note is 0. Also, we have to keep a 0 in the 
+    // last stack position to be able to zero out all notes when popping
+    // them out of the stack on note off events.
+    while (temp && (i < NOTE_STACK_SIZE - 1)) {
          // Right shift stack
         temp2 = temp;
         temp = _noteStack[i + 1];
@@ -107,7 +110,14 @@ void Mono::_pushNote(uint8_t note) {
 
 void Mono::_popNote(uint8_t note) {
     bool shift = false;
-    for (int i = 0; i < NOTE_STACK_SIZE; i++) {
+
+    // Set the latch note to keep the CV out at the last note's voltage
+    uint8_t tempLatchNote = _noteStack[0];
+
+    // Find the released note and remove from the stack while pushing
+    // all other notes to the left. The last element of the stack is
+    // always 0.
+    for (int i = 0; i < (NOTE_STACK_SIZE - 1); i++) {
         if (_noteStack[i] == note) {
             shift = true;
         }
@@ -115,6 +125,8 @@ void Mono::_popNote(uint8_t note) {
             _noteStack[i] = _noteStack[i + 1];
         }
     }
+
+    _latchNote = _noteStack[0] ? _noteStack[0] : tempLatchNote;
 }
 
 int Mono::_findNote(uint8_t note) {

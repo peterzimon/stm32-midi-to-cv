@@ -13,6 +13,9 @@
  * CV 2     -> velocity
  * CV 3     -> modwheel
  * 
+ * Notes are put in a stack (last note on top) so that when a key is held and 
+ * another played, then released, then the previous note is played.
+ * 
  * TODO: modwheel implementation
  * 
  * CIRCULAR
@@ -38,7 +41,7 @@
 #include "settings.h"
 
 #define UNISON_DETUNE_FACTOR 0.09
-#define NOTE_STACK_SIZE 10
+#define NOTE_STACK_SIZE 13
 
 enum mono_mode {
     MONOMODE_DEFAULT,
@@ -61,6 +64,7 @@ class Mono: public CVGate {
         mono_mode _monoMode;
         uint8_t _lastcv;
         uint8_t _note;
+        uint8_t _latchNote;
         uint16_t _velocity;
         uint8_t _detuneValue;
         uint8_t _noteStack[NOTE_STACK_SIZE];
