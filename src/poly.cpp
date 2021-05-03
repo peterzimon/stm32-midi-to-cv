@@ -3,8 +3,7 @@
 
 Poly::Poly(void) {
     for (int i = 0; i < VOICES; i++) {
-        _notes[i] = 0;
-        _cvs[i] = 0;
+        _notes[i] = _latchNotes[i] = _cvs[i] = 0;
         _lru[i] = -1;
     }
     _polyMode = POLYMODE_DEFAULT;
@@ -71,7 +70,7 @@ void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
     case POLYMODE_BCH:
         if (note < CHORD_LEAD_BORDER_NOTE) {
             _leadNote = note;
-            _notes[0] = note;
+            _notes[0] = _latchNotes[0] = note;
             return;
         }
         break;
@@ -79,7 +78,7 @@ void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
     case POLYMODE_CHL:
         if (note >= CHORD_LEAD_BORDER_NOTE) {
             _leadNote = note;
-            _notes[VOICES - 1] = note;
+            _notes[VOICES - 1] = _latchNotes[VOICES - 1] = note;
             return;
         }
         break;
@@ -98,7 +97,7 @@ void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
         _lru[_polyLastVoice - 1] = voice;
     }
 
-    _notes[voice] = note;
+    _notes[voice] = _latchNotes[voice] = note;
 }
 
 /**
@@ -107,7 +106,7 @@ void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 */
 void Poly::getCVGate(uint16_t *cv, int *gate) {
     for (int voice = 0; voice < VOICES; voice++) {
-        cv[voice] = cvForNote(_notes[voice], voice);
+        cv[voice] = cvForNote(_latchNotes[voice], voice);
         gate[voice] = _notes[voice] ? 1 : 0;
     }
 }

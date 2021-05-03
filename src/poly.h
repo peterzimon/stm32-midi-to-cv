@@ -106,6 +106,7 @@ class Poly: public CVGate {
     private:
         poly_mode _polyMode;
         uint8_t _leadNote;
+        uint8_t _latchNotes[VOICES];
         uint8_t _notes[VOICES];
         uint16_t _cvs[VOICES];
         int _lru[VOICES];
