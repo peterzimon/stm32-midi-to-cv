@@ -53,6 +53,7 @@ class Mono: public CVGate {
     public:
         Mono(void);
 
+        void reset(void);
         void setMode(mono_mode monoMode);
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
@@ -72,7 +73,6 @@ class Mono: public CVGate {
         void _pushNote(uint8_t note);
         void _popNote(uint8_t note);
         int _findNote(uint8_t note);
-        void _reset(void);
 };
 
 #endif

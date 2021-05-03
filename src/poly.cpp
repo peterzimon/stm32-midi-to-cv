@@ -2,13 +2,17 @@
 #include "poly.h"
 
 Poly::Poly(void) {
+    _polyMode = POLYMODE_DEFAULT;
+    _polyFirstVoice = 0;
+    _polyLastVoice = VOICES;
+    reset();
+}
+
+void Poly::reset(void) {
     for (int i = 0; i < VOICES; i++) {
         _notes[i] = _latchNotes[i] = _cvs[i] = 0;
         _lru[i] = -1;
     }
-    _polyMode = POLYMODE_DEFAULT;
-    _polyFirstVoice = 0;
-    _polyLastVoice = VOICES;
 }
 
 void Poly::setMode(poly_mode polyMode) {

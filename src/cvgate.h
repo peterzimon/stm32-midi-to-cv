@@ -39,6 +39,7 @@ class CVGate {
     public:
         CVGate();
 
+        virtual void reset(void) { }
         virtual void noteOff(uint8_t channel, uint8_t note, uint8_t velocity) { }
         virtual void noteOn(uint8_t channel, uint8_t note, uint8_t velocity) { }
         virtual void modWheel(uint8_t channel, uint8_t value) { }

@@ -48,6 +48,11 @@ void MidiHandler::setMode(void) {
             _cvGate = &_quad;
             break;
     }
+
+    // Reset everything to avoid accidental stuck gates or CVs
+    _cvGate->reset();
+    _cvGate->getCVGate(_cvs, _gates);
+    _updateOutput();
 }
 
 void MidiHandler::attach(DAC *dac) {

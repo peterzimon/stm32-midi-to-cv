@@ -13,6 +13,7 @@ class Quad: public CVGate {
     public:
         Quad(void);
 
+        void reset(void);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void getCVGate(uint16_t *cv, int *gate);
@@ -21,7 +22,6 @@ class Quad: public CVGate {
     private:
         uint8_t _latchNotes[VOICES];
         uint8_t _notes[VOICES];
-        void _reset(void);
 };
 
 #endif

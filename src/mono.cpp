@@ -2,7 +2,16 @@
 #include <utils.h>
 
 Mono::Mono(void) {
-    _reset();
+    _monoMode = MONOMODE_DEFAULT;
+    reset();
+}
+
+void Mono::reset(void) {
+    _note = 0;
+    _lastcv = 0;
+    for (int i = 0; i < NOTE_STACK_SIZE; i++) {
+        _noteStack[i] = 0;
+    }
 }
 
 void Mono::setMode(mono_mode monoMode) {
@@ -134,15 +143,6 @@ int Mono::_findNote(uint8_t note) {
         if (_noteStack[i] == note) return i;
     }
     return 0;
-}
-
-void Mono::_reset(void) {
-    _note = 0;
-    _monoMode = MONOMODE_DEFAULT;
-    _lastcv = 0;
-    for (int i = 0; i < NOTE_STACK_SIZE; i++) {
-        _noteStack[i] = 0;
-    }
 }
 
 void Mono::debug(void) { }
