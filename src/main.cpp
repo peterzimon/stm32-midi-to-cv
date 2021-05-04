@@ -67,7 +67,6 @@
  * ~~~~
  * To be tested:
  * - all modes, QUAD never been tested, BCH and CHL work pretty unreliably
- * - test 5V supply
  * - HAL include in MCP4728 driver should be conditioned to F1 vs F4
  * - mono velocity
  * - pitch bend is not implemented

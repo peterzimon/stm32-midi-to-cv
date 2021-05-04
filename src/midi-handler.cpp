@@ -50,9 +50,9 @@ void MidiHandler::setMode(void) {
     }
 
     // Reset everything to avoid accidental stuck gates or CVs
-    _cvGate->reset();
-    _cvGate->getCVGate(_cvs, _gates);
-    _updateOutput();
+    // _cvGate->reset();
+    // _cvGate->getCVGate(_cvs, _gates);
+    // _updateOutput();
 }
 
 void MidiHandler::attach(DAC *dac) {
@@ -91,6 +91,12 @@ void MidiHandler::noteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
 
 void MidiHandler::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
     _cvGate->noteOn(channel, note, velocity);
+    _cvGate->getCVGate(_cvs, _gates);
+    _updateOutput();
+}
+
+void MidiHandler::pitchBend(uint8_t channel, uint16_t bend) {
+    _cvGate->updatePitchBend(bend);
     _cvGate->getCVGate(_cvs, _gates);
     _updateOutput();
 }

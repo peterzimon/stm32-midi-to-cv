@@ -32,6 +32,7 @@ class MidiHandler: public MidiParser {
         void process();
         void noteOff(uint8_t channel, uint8_t note, uint8_t velocity);
         void noteOn(uint8_t channel, uint8_t note, uint8_t velocity);
+        void pitchBend(uint8_t channel, uint16_t bend);
         void controlChange(uint8_t channel, uint8_t data1, uint8_t data2);
         void debug(void);
     

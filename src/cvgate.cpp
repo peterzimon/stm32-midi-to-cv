@@ -68,6 +68,8 @@ CVGate::CVGate() {
     _cal[3][8] = -32;
     _cal[3][9] = -36;
     _cal[3][10] = -36;
+
+    _pitchBendCV = 0;
 }
 
 /**
@@ -91,16 +93,18 @@ uint16_t CVGate::cvForNote(uint8_t note, int voice) {
     uint16_t rawCV = (uint16_t)Utils::map(tNote, LOWEST_MIDI_NOTE, (LOWEST_MIDI_NOTE + notes), 0, MAX_NOTE_VOLTAGE);
     uint16_t cv = (uint16_t)Utils::map(rawCV, rawCVlo, rawCVhi, (rawCVlo + _cal[voice][octave - 1]), (rawCVhi + _cal[voice][octave]));
 
-    return cv;
+    return cv + _pitchBendCV;
 }
 
 /**
- * TODO: pitch bend
- * 1. set a global bend variable 
- * 2. adjust the CV output in `cvForNote` function based on bend value. Adjusting
- *    can be done by multiplying the actual note, the min and the max note with
- *    1000 and the add the bend value(?)
+ * Pitch bend value can be between 0 and 0x3fff with 0x2000 meaning no bend. 
+ * Pitch bend CV calculation:
+ * 1. shift bend value to -0x2000 and 0x2000
+ * 2. get max bend CV value (2 semitones)
+ * 3. calculate actual bend CV value with the bend vs. max bend ratio
 */
-uint16_t CVGate::pitchBend(uint32_t bend) {
-    return 0;
+void CVGate::updatePitchBend(uint16_t bend) {
+    int16_t shiftedBend = bend - PITCH_BEND_CENTER;
+    uint8_t maxBendCV = (uint8_t) (MAX_NOTE_VOLTAGE / (OCTAVES * 12) * 2);
+    _pitchBendCV = shiftedBend * maxBendCV / PITCH_BEND_CENTER; // BEND / MAX_BEND_VALUE[8192]] = BENDCV / MAX_BEND_CV
 }
