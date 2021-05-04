@@ -104,10 +104,6 @@ void Poly::noteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
     _notes[voice] = _latchNotes[voice] = note;
 }
 
-/**
- * TODO: I'm just doing a naive calibration by channel by adjusting the number of notes
- * of how much the 10 octaves should be spread out. This needs to be done properly!
-*/
 void Poly::getCVGate(uint16_t *cv, int *gate) {
     for (int voice = 0; voice < VOICES; voice++) {
         cv[voice] = cvForNote(_latchNotes[voice], voice);

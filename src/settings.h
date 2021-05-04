@@ -1,8 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#define SERIAL_DEBUG // Comment to turn off serial debugging
-                     // TODO: final test without serial debug
+// #define SERIAL_DEBUG // Comment/uncomment to turn off/on serial debugging
 #define VOICES 4
 
 // Midi note mapping to CV

@@ -65,11 +65,10 @@
  * 
  * 
  * ~~~~
- * To be tested:
+ * TODO:
  * - all modes, QUAD never been tested, BCH and CHL work pretty unreliably
  * - HAL include in MCP4728 driver should be conditioned to F1 vs F4
  * - mono velocity
- * - pitch bend is not implemented
  * - modwheel is not implemented
  * - ...global search for "TODO:" biatch!
 */
