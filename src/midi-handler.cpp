@@ -9,8 +9,6 @@ void MidiHandler::init(void) {
         _cvs[i] = 0;
         _gates[i] = 0;
     }
-
-    setMode();
 }
 
 void MidiHandler::setMode(void) {
@@ -49,10 +47,11 @@ void MidiHandler::setMode(void) {
             break;
     }
 
-    // Reset everything to avoid accidental stuck gates or CVs
-    // _cvGate->reset();
-    // _cvGate->getCVGate(_cvs, _gates);
-    // _updateOutput();
+    // Hard reset voices to avoid accidental stuck gates or CVs
+    for (int i = 0; i < VOICES; i++) {
+        _cvs[i] = _gates[i] = 0;
+    }
+    _updateOutput();
 }
 
 void MidiHandler::attach(DAC *dac) {

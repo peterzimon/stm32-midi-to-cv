@@ -86,11 +86,11 @@
 
 Serial serial;
 System system;
-MidiHandler midi;
 DAC dac;
 Gate gate;
 Settings settings;
 UI ui;
+MidiHandler midi;
 
 int main(void) {
 
@@ -107,6 +107,8 @@ int main(void) {
     midi.attach(&dac);
     midi.attach(&gate);
     midi.attach(&ui);
+
+    midi.setMode();
     
     while (1) {
         if (serial.midiReadable()) {
